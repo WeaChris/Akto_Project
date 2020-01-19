@@ -1,0 +1,44 @@
+body{
+	background-image: url('background3.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+    background-size: cover;
+	text-align:center;
+}
+div{
+	
+	padding-top:20px;
+	padding-bottom:20px;
+}
+
+#main-container{
+	
+	border-radius: 25px;
+	background-color: #FAEBD7;
+	width:500px;
+	margin:0 auto 0 auto;
+	
+}
+h1{
+	
+}
+
+
+#apo{
+	
+	padding-right:20px;
+}
+
+#div1{
+	padding:10px;
+}
+#div2{
+	padding:10px;
+}
+#same{
+	padding-right:20px;
+}
+select{
+	width:200px;
+	
+}

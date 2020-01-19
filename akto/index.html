@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html>
+
+
+<head>
+<meta charset="UTF-8">
+<title>welcome</title>
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/main.css">
+ 
+</head>
+
+<body>
+
+<h1 style="text-align:center">ΑΚΤΟΠΛΟΙΚΗ</h1>
+<br>
+
+
+<div id="main-container">
+	<!-- ΠΡΩΤΟ  -->
+	<div>
+		<label>Αναζήτηση Δρομολογίου</label>
+		<button id="B1">press here</button>
+	</div>
+	<div id="anazitisi">
+		<h2>Αναζήτηση Δρομολογίου</h2>
+			<div id="div1">
+				<label id="apo" for="apoL">ΑΠΟ</label>
+				<select id="apoL" name="list1"> 
+				
+				
+				</select>
+			</div>
+			<div id="div1">
+				<label id="apo" for="prosL">ΠΡΟΣ</label>
+				<select id="prosL" name="list2"> 
+				
+				
+				</select>
+			</div>
+			
+			<div id="div2">
+				<label id="same1"for="anaxL">ΑΝΑΧΩΡΗΣΗ</label>
+				<input id="same2" type="date" name="depDate">
+			</div>
+			<div id="div3">
+				<label id="same3" for="epistL">ΕΠΙΣΤΡΟΦΗ(εάν προβλέπεται)</label>
+				<input id="same4" type="date" name="comebackDate">
+			</div>
+			<div>
+				<button id="toPrint">Εμφάνιση</button>
+			</div>
+
+		
+		<div id="route_data"></div>
+		
+	</div>
+	<!-- Εμάφνιση Πρωτου -->
+
+	<div id="result">
+		<div>
+			<label>	Αποτέλεσμα αναζήτησης Δρομολογίου</label>
+		</div>
+		
+
+	</div>
+
+	<!-- ΔΕΥΤΕΡΟ -->
+
+	<div>
+		<label>Αναζήτηση Επιβατη Δρομολογίου</label>
+		<button id="B2">press here</button>
+	</div>
+	<div id="anazitisiEpivati">
+			<div>
+				<label>Κωδικος Δρομολογίου</label>
+				<input id="routeId" type="text">
+			</div>
+			
+			<div>
+				<label>Όνομα</label>
+				<input id="passName" type="text">
+			</div>
+			<div>
+				<label>Επίθετο</label>
+				<input id="passSurname" type="text">
+			</div>
+			<div>
+				<button id="toSearch">Αναζήτηση</button>
+			</div>
+	</div>
+	<!-- ΕΜΦΑΝΙΣΗ ΔΕΥΤΕΡΟΥ -->
+
+	<div id="result2">
+		<div>
+			<label>	Αποτέλεσμα αναζήτησης Δρομολογίου</label>
+		</div>
+		
+
+	</div>
+
+	<!-- ΤΡΙΤΟ -->
+
+	<div>
+		<label>Εμάφνιση όλων των επιβατών δρομολογιου</label>
+		<button id="B3">press here</button>
+	</div>
+	<div id="printAll">
+			<div>
+				<label>Κωδικος Δρομολογίου</label>
+				<input id=routeId2>
+			</div>
+			<div>
+				<button id="toSearch2">Αναζήτηση</button>
+			</div>
+	</div>
+	<div id="result3">
+		<div>
+			<label>	Αποτέλεσμα αναζήτησης Δρομολογίου</label>
+		</div>
+		
+	</div>
+
+</div>
+
+
+</body>
+
+
+</html> 
+
+<script>
+	let ports=[];
+	
+	$(document).ready(get_data);
+	
+	function get_data(){
+		$.ajax({  
+			url:"server/route.php",  
+			method:"GET",
+			success:function(data){  
+				
+				$('#apoL').html(data); 
+				$('#prosL').html(data); 
+			}  
+		}); 
+	}
+	function anazitisi(){
+	
+		var apoSelected = $('#apoL').find(":selected").text();
+		var prosSelected = $('#prosL').find(":selected").text();
+		var depDateSelected = $('#same2').val();
+		var returnDateSelected= $('#same4').val();
+		
+		//console.log(apoSelected);
+		//console.log(prosSelected);
+		//console.log(depDateSelected);
+		//console.log(returnDateSelected);
+		
+		json_data = {apoVal:apoSelected, prosVal:prosSelected,depDateVal:depDateSelected,retDateVal:returnDateSelected};
+		
+		$.post('server/searchforroute.php',json_data,function(data){
+		
+			$('#result').html(data);
+		
+		});
+		
+	}
+
+	function passengerSearch(){
+		var routeID = String($('#routeId').val());
+		var name = $('#passName').val();
+		var surname = $('#passSurname').val();
+		
+		//console.log(typeof(routeID));
+		//console.log(typeof(name));
+		//console.log(typeof(surname));
+		
+		var json_data2 = {routeiID:routeID, name2:name, surname2:surname};
+		
+		//console.log(json_data2);
+		
+		$.post('server/passengerSearch.php', json_data2, function(data){
+			console.log(data);
+			$('#result2').html(data);
+			
+		});
+		
+	}
+	function printAllPassengers(){
+		var routeID2= String($('#routeId2').val());
+		
+		console.log(routeID2);
+		
+		var json_data3 = {routeiID2:routeID2};
+		
+		$.post('server/printAllPassengers.php', json_data3, function(data){
+			$('#result3').html(data);
+		});
+		
+	}
+	
+	
+	$("#toPrint").click(anazitisi);
+	
+	$("#toSearch").click(passengerSearch);
+	
+	$("#toSearch2").click(printAllPassengers);
+	
+	$("#anazitisi").hide();
+
+	let B1clicked=false;
+	let B2clicked=false;
+	let B3clicked=false;
+	let toPrintclicked=false;
+	let toSearch2clicked=false;
+
+	$("#B1").click(function() {
+		if(!B1clicked){
+			B1clicked=true;
+			$("#anazitisi").show();
+		}
+		else{
+			B1clicked=false;
+			$("#anazitisi").hide();
+		}
+	});
+	
+	$("#anazitisiEpivati").hide();
+	
+
+	$("#B2").click(function() {
+		if(!B2clicked){
+			B2clicked=true;
+			$("#anazitisiEpivati").show();
+		}
+		else{
+			B2clicked=false;
+			$("#anazitisiEpivati").hide();
+		}
+	});
+	
+	$("#printAll").hide();
+
+	
+
+	$("#B3").click(function() {
+		if(!B3clicked){
+			B3clicked=true;
+			$("#printAll").show();
+		}
+		else{
+			B3clicked=false;
+			$("#printAll").hide();
+		}
+	});
+	
+	$("#result").hide();
+	
+
+	$("#toPrint").click(function() {
+		if(!toPrintclicked){
+			toPrintclicked=true;
+			$("#result").show();
+		}
+		else{
+			toPrintclicked=false;
+			$("#result").hide();
+		}
+	});
+	
+	$("#result2").hide();
+	
+
+	$("#toSearch").click(function() {
+		if(!B2clicked){
+			B2clicked=true;
+			$("#result2").show();
+		}
+		else{
+			B2clicked=false;
+			$("#result2").hide();
+		}
+	});
+	
+	$("#result3").hide();
+
+
+	$("#toSearch2").click(function() {
+		if(!toSearch2clicked){
+			toSearch2clicked=true;
+			$("#result3").show();
+		}
+		else{
+			toSearch2clicked=false;
+			$("#result3").hide();
+		}
+	});
+
+</script>
